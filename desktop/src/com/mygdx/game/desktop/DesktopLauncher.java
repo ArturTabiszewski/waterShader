@@ -7,6 +7,9 @@ import com.mygdx.game.waterShader;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		int z = 2;
+		config.width = 1920/z;
+		config.height = 1080/z;		
 		new LwjglApplication(new waterShader(), config);
 	}
 }
