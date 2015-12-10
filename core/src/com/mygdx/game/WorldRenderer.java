@@ -39,22 +39,39 @@ public class WorldRenderer implements Disposable{
 				);
 		
 		waterMap = new Texture(Gdx.files.internal("shader/waterDispMap.jpg"));
-		waterMap.bind(1);
-		Assets.instance.bgTexture.bind(0);
 	}
 	
 	public void render(){
 		renderWater();
 		
+		
+		waterShader.begin();
+		{
+			waterShader.setUniformi("u_texture1", 1); // enable texture buffer 1
+			waterShader.setUniformf("u_time", 1); // the time to make the normal map slide
+			waterShader.setUniformf("u_y_offset", yWaterOffset / Gdx.graphics.getHeight());
+			//waterShader.setUniform4fv("u_color", values, 0, 4); // water color if needed
+			waterShader.setUniformf("u_sparkle_intensity", .022f); // the treshold when the wave will generate some sparkles
+		}
+		waterShader.end();
+		
+		waterMap.bind(1);
+		Assets.instance.bgTexture.bind(0);
+		
 		batch.begin();
 		//worldController.render(batch);
 		batch.draw(Assets.instance.bgTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
 		batch.setShader(waterShader);
+		
+
 		batch.draw(waterSurface, 0, -level);
 		batch.setShader(null);
 		batch.end();
-		
+
 	}
+	
+	private float values[] = {0.9f};
 	
 	public void renderWater(){
 		fbo.begin();
@@ -71,16 +88,7 @@ public class WorldRenderer implements Disposable{
 		  fbo.getColorBufferTexture(), 0, (int) yWaterOffset, fbo.getColorBufferTexture().getWidth(), Gdx.graphics.getHeight()
 		);
 		
-		
-//		waterShader.begin();
-//		{
-//		  waterShader.setUniformi("u_texture1", 1); // enable texture buffer 1
-//		  waterShader.setUniformf("u_time", 10); // the time to make the normal map slide
-//		  waterShader.setUniformf("u_y_offset", yWaterOffset / Gdx.graphics.getHeight());
-//		  //waterShader.setUniform4fv("u_color", waterColor, 0, 4); // water color if needed
-//		 // waterShader.setUniformf("u_sparkle_intensity", sparkleIntensity); // the treshold when the wave will generate some sparkles
-//		}
-//		waterShader.end();
+
 		
 		
 	}
